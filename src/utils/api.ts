@@ -28,12 +28,11 @@ export const fetchWeatherDataForCity = async (
   const nowKey = removeTimeFromISOString(now.toISOString())
 
   // This map groups the forecasts by day to be further processed.
-  // The MOST interesting part of this test.
   const daysMap = new Map<
     string,
     {
       index: number
-      dt: number
+      timestamps: number[]
       temps: number[]
       weathers: { icon: string; main: string }[]
     }
@@ -58,14 +57,14 @@ export const fetchWeatherDataForCity = async (
     // Days not seen before must be added for the first time to the 'daysMap':
     //
     // index: this field will make sorting easier later, a convinience field
-    // dt: timestamp of the current item to later turn it into a date
+    // timestamps: collects all timestamps to adjust last within a day with tz offset
     // temps: array of all the temperatures of the forecasts in the same day
     // weathers: array of all weathers seen so far for a single day
     //
     if (dayKey !== nowKey && !daysMap.has(dayKey)) {
       daysMap.set(dayKey, {
         index: index,
-        dt: item.dt,
+        timestamps: [],
         temps: [],
         weathers: []
       })
@@ -74,6 +73,7 @@ export const fetchWeatherDataForCity = async (
     const currDayFromMap = daysMap.get(dayKey)
 
     // When a forecast has a day seen already we collect its temperature and weather
+    currDayFromMap?.timestamps.push(item.dt)
     currDayFromMap?.temps.push(item.main.temp)
     currDayFromMap?.weathers.push({ icon: item.weather[0].icon, main: item.weather[0].main })
   })
@@ -87,7 +87,7 @@ export const fetchWeatherDataForCity = async (
       return {
         id: crypto.randomUUID(),
         iconCode: `${iconId}d`, // use by default always day icons
-        date: mapApiTimestamp(day.dt),
+        date: mapApiTimestamp(day.timestamps.at(-1)! + responseDTO.city.timezone), // add timezone offset to display days forecast in city local time
         message: `${mostSeen.main} throughout the day.`,
         maxTemperature: Math.round(Math.max(...day.temps)),
         minTemperature: Math.round(Math.min(...day.temps))
