@@ -45,7 +45,7 @@ export const fetchWeatherDataForCity = async (
       hourlyList.push({
         id: crypto.randomUUID(),
         temperature: Math.round(item.main.temp),
-        pop: item.pop * 100, // turn into percentange
+        pop: Math.round(item.pop * 100), // turn into int-percentange
         iconCode: item.weather[0].icon,
         time: mapApiTimestamp(item.dt)
       })

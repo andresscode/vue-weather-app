@@ -21,12 +21,13 @@ export function formatDayForecastDate(date: Date) {
   return date.toLocaleString('en-US', {
     weekday: 'short',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'UTC'
   })
 }
 
 export function mapApiTimestamp(timestamp: number) {
-  return new Date(timestamp * 1000) // JavaScript expects millis
+  return new Date(Math.round(timestamp * 1000)) // JavaScript expects millis
 }
 
 export function removeTimeFromISOString(datetime: string) {
