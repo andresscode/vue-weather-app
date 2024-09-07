@@ -41,10 +41,34 @@ export type ApiResponseWeatherItemDTO = {
   main: string
 }
 
+export type CityDTO = {
+  name: string
+  lat: number
+  lon: number
+}
+
 export const defaultCities: CityModel[] = [
-  { name: 'Rio de Janeiro', lat: -22.90278, lon: -43.2075, hourlyForecast: [], dailyForecast: [] },
-  { name: 'Beijing', lat: 39.9075, lon: 116.39723, hourlyForecast: [], dailyForecast: [] },
-  { name: 'Los Angeles', lat: 34.052235, lon: -118.243683, hourlyForecast: [], dailyForecast: [] }
+  {
+    name: 'Rio de Janeiro',
+    lat: -22.90278,
+    lon: -43.2075,
+    hourlyForecast: [],
+    dailyForecast: []
+  },
+  {
+    name: 'Beijing',
+    lat: 39.9075,
+    lon: 116.39723,
+    hourlyForecast: [],
+    dailyForecast: []
+  },
+  {
+    name: 'Los Angeles',
+    lat: 34.052235,
+    lon: -118.243683,
+    hourlyForecast: [],
+    dailyForecast: []
+  }
 ]
 
 export const hourForecastListData: HourForecastModel[] = [

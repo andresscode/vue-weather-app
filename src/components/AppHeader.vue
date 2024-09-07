@@ -2,7 +2,7 @@
 import IconMagnifyingGlass from './icons/IconMagnifyingGlass.vue'
 import IconRefresh from './icons/IconRefresh.vue'
 
-defineProps<{ refreshData: () => void }>()
+defineProps<{ refreshData: () => void; toggleSearch: () => void }>()
 </script>
 
 <template>
@@ -12,7 +12,9 @@ defineProps<{ refreshData: () => void }>()
       <div @click="refreshData">
         <IconRefresh :color="'#ffffff'" :width="24" :height="24" class="icon" />
       </div>
-      <IconMagnifyingGlass :color="'#ffffff'" :width="24" :height="24" class="icon" />
+      <div @click="toggleSearch">
+        <IconMagnifyingGlass :color="'#ffffff'" :width="24" :height="24" class="icon" />
+      </div>
     </div>
   </header>
 </template>
