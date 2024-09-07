@@ -27,6 +27,7 @@ export type DayForecastModel = {
 
 export type ApiResponseDTO = {
   list: ApiResponseItemDTO[]
+  city: { timezone: number }
 }
 
 export type ApiResponseItemDTO = {

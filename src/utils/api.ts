@@ -47,7 +47,7 @@ export const fetchWeatherDataForCity = async (
         temperature: Math.round(item.main.temp),
         pop: Math.round(item.pop * 100), // turn into int-percentange
         iconCode: item.weather[0].icon,
-        time: mapApiTimestamp(item.dt)
+        time: mapApiTimestamp(item.dt + responseDTO.city.timezone)
       })
     }
 
