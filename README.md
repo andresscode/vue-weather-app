@@ -13,7 +13,7 @@ VITE_API_KEY=<API_KEY_HERE>
 ## Features
 
 * Hourly Forecast: Next 24 hours.
-* Daily Forecast: Next five days.
+* Daily Forecast: Next *n* days.
 * Users can refresh the forecast data.
 * Simple city search.
 
@@ -23,7 +23,7 @@ VITE_API_KEY=<API_KEY_HERE>
 
  ### Daily Forecast
 
- The daily forecast displays information about the weather for the next five days. The dates correspond to the city's local time as well. The most important part here was determining what message and icon to show for each day.
+ The daily forecast displays information about the weather for the next five or four days. The number of days displayed depends on the initial day received. If the initial day is at midnight we don't have more than five days in total meaning that we can display more than four days in the future. The dates correspond to the city's local time as well. The most important part here was determining what message and icon to show for each day.
  In this case, I found the longest subsequence of similar weather conditions using the weather's icon code (ignoring days and nights). For example, given the following sequence:
 
 ```
