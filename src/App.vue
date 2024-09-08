@@ -64,6 +64,9 @@ async function addCity(cityName: string) {
 }
 
 const hourlyForecast = computed(() => cities.value[selectedCityIndex.value].hourlyForecast)
+const dailyForecastTitle = computed(
+  () => `Next ${cities.value[selectedCityIndex.value].dailyForecast.length} days`
+)
 const dailyForecast = computed(() => cities.value[selectedCityIndex.value].dailyForecast)
 const footerMessage = computed(() => `Last updated on ${lastUpdated.value}`)
 </script>
@@ -79,7 +82,7 @@ const footerMessage = computed(() => `Last updated on ${lastUpdated.value}`)
         <HourForecastList :data="hourlyForecast" />
       </template>
     </ForecastCard>
-    <ForecastCard :title="'Next 5 days'">
+    <ForecastCard :title="dailyForecastTitle">
       <template #content>
         <DayForecastList :data="dailyForecast" />
       </template>
