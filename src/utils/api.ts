@@ -1,10 +1,9 @@
 import type { ApiResponseDTO, CityModel, DayForecastModel, HourForecastModel } from '@/types'
-import { mapApiTimestamp, removeTimeFromISOString } from './date'
+import { isMidnightInTimezone, mapApiTimestamp, removeTimeFromISOString } from './date'
 import response from './response.json'
 
 export const fetchWeatherDataForCity = async (
   city: CityModel,
-  now: Date,
   fetcher: (city: CityModel) => Promise<ApiResponseDTO>
 ): Promise<{ hourly: HourForecastModel[]; daily: DayForecastModel[] }> => {
   // Fetch raw data from the weather API as it is
@@ -21,18 +20,26 @@ export const fetchWeatherDataForCity = async (
   // The user will see the content from this list in the 'Next hours' component.
   const hourlyList: HourForecastModel[] = []
 
-  // This key represents today date string that must not be present in the
-  // array that will display the data for 'Next 5 days'
+  // Here we check if the first record from the API is exactly at 00:00:00 in the
+  // city's own timezone. If so, we don't exclude the current date from the 'Next 5 days'
+  // list because in this particular case we will display just 4 days and not five.
+  // If we need to exclude the first day, we apply the timezone offset to work under
+  // the city's particular timezone.
   //
   // Format: 2024-01-01
-  const nowKey = removeTimeFromISOString(now.toISOString())
+  const excludedDay: string | null = isMidnightInTimezone(
+    responseDTO.list[0].dt,
+    responseDTO.city.timezone
+  )
+    ? null
+    : removeTimeFromISOString(mapApiTimestamp(responseDTO.list[0].dt + responseDTO.city.timezone).toISOString())
 
   // This map groups the forecasts by day to be further processed.
   const daysMap = new Map<
     string,
     {
       index: number
-      timestamps: number[]
+      dt: number
       temps: number[]
       weathers: { icon: string; main: string }[]
     }
@@ -51,20 +58,21 @@ export const fetchWeatherDataForCity = async (
     }
 
     // This key serves to group the ites for each day in the 'daysMap'. Its format
-    // must be the same as the one used in 'nowKey', i.e., 2024-10-10
-    const dayKey = removeTimeFromISOString(mapApiTimestamp(item.dt).toISOString())
+    // must be the same as the one used in 'excludedDay', i.e., 2024-10-10.
+    // It's important to add the city timezone to work in that timezone.
+    const dayKey = removeTimeFromISOString(mapApiTimestamp(item.dt + responseDTO.city.timezone).toISOString())
 
     // Days not seen before must be added for the first time to the 'daysMap':
     //
     // index: this field will make sorting easier later, a convinience field
-    // timestamps: collects all timestamps to adjust last within a day with tz offset
+    // dt: timestamp of the day we'll display in the 'Next 5 days' list
     // temps: array of all the temperatures of the forecasts in the same day
     // weathers: array of all weathers seen so far for a single day
     //
-    if (dayKey !== nowKey && !daysMap.has(dayKey)) {
+    if ((!excludedDay || dayKey !== excludedDay) && !daysMap.has(dayKey)) {
       daysMap.set(dayKey, {
         index: index,
-        timestamps: [],
+        dt: item.dt,
         temps: [],
         weathers: []
       })
@@ -73,7 +81,6 @@ export const fetchWeatherDataForCity = async (
     const currDayFromMap = daysMap.get(dayKey)
 
     // When a forecast has a day seen already we collect its temperature and weather
-    currDayFromMap?.timestamps.push(item.dt)
     currDayFromMap?.temps.push(item.main.temp)
     currDayFromMap?.weathers.push({ icon: item.weather[0].icon, main: item.weather[0].main })
   })
@@ -87,7 +94,7 @@ export const fetchWeatherDataForCity = async (
       return {
         id: crypto.randomUUID(),
         iconCode: `${iconId}d`, // use by default always day icons
-        date: mapApiTimestamp(day.timestamps.pop()! + responseDTO.city.timezone), // add timezone offset to display days forecast in city local time
+        date: mapApiTimestamp(day.dt + responseDTO.city.timezone), // return date in city's timezone
         message: `${mostSeen.main} throughout the day.`,
         maxTemperature: Math.round(Math.max(...day.temps)),
         minTemperature: Math.round(Math.min(...day.temps))

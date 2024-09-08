@@ -19,11 +19,7 @@ describe('api', () => {
       { id: '8', temperature: 23, pop: 0, iconCode: '01n', time: adjustTimezone(1725764400) }
     ]
 
-    const { hourly: actual } = await fetchWeatherDataForCity(
-      defaultCities[0],
-      mapApiTimestamp(1725688800),
-      fakeFetcher
-    )
+    const { hourly: actual } = await fetchWeatherDataForCity(defaultCities[0], fakeFetcher)
 
     expect(actual).toHaveLength(expected.length)
 
@@ -40,51 +36,47 @@ describe('api', () => {
     const expected: DayForecastModel[] = [
       {
         id: '1',
-        iconCode: '01d', // 01n, 01n, 01n, 01d, 01d, 01d, 01d, 01n
-        date: adjustTimezone(1725829200), // 2024-09-08
+        iconCode: '01d', // 01n, 01n, 01d, 01d, 01d, 01d, 01n, 01n
+        date: mapApiTimestamp(1725753600), // 2024-09-08
         message: 'Clear throughout the day.',
-        maxTemperature: 29, // 23.84, 23.05, 22.24, 21.89, 26.33, 28.83, 28.19, 25.77
+        maxTemperature: 29, // 23.05, 22.24, 21.89, 26.33, 28.83, 28.19, 25.77, 23.81
         minTemperature: 22
       },
       {
         id: '2',
-        iconCode: '01d', // 01n, 01n, 01n, 01d, 01d, 01d, 01d, 01n
-        date: adjustTimezone(1725915600), // 2024-09-09
+        iconCode: '01d', // 01n, 01n, 01d, 01d, 01d, 01d, 01n, 01n
+        date: mapApiTimestamp(1725840000), // 2024-09-09
         message: 'Clear throughout the day.',
-        maxTemperature: 29, // 23.81, 22.59, 21.68, 21.08, 25.26, 28.82, 28.03, 25.07
+        maxTemperature: 29, // 22.59, 21.68, 21.08, 25.26, 28.82, 28.03, 25.07, 23.75
         minTemperature: 21
       },
       {
         id: '3',
-        iconCode: '04d', // 01n, 01n, 03n, 04d, 04d, 04d, 03d, 01n
-        date: adjustTimezone(1726002000), // 2024-09-10
+        iconCode: '04d', // 01n, 03n, 04d, 04d, 04d, 03d, 01n, 01n
+        date: mapApiTimestamp(1725926400), // 2024-09-10
         message: 'Clouds throughout the day.',
-        maxTemperature: 30, // 23.75, 22.76, 21.81, 21.2, 26.37, 29.5, 29.04, 25.8
+        maxTemperature: 30, // 22.76, 21.81, 21.2, 26.37, 29.5, 29.04, 25.8, 25.33
         minTemperature: 21
       },
       {
         id: '4',
-        iconCode: '04d', // 01n, 02n, 02n, 03d, 04d, 04d, 04d, 04n
-        date: adjustTimezone(1726088400), // 2024-09-11
+        iconCode: '04d', // 02n, 02n, 03d, 04d, 04d, 04d, 04n, 04n
+        date: mapApiTimestamp(1726012800), // 2024-09-11
         message: 'Clouds throughout the day.',
-        maxTemperature: 34, // 25.33, 24.13, 23.55, 22.91, 28.72, 33.9, 31.81, 28.23
+        maxTemperature: 34, // 24.13, 23.55, 22.91, 28.72, 33.9, 31.81, 28.23, 27.95
         minTemperature: 23
       },
       {
         id: '5',
-        iconCode: '04d', // 04n, 04n
-        date: adjustTimezone(1726110000), // 2024-09-12
+        iconCode: '04d', // 04n
+        date: mapApiTimestamp(1726099200), // 2024-09-12
         message: 'Clouds throughout the day.',
-        maxTemperature: 28, // 27.95, 26.72
+        maxTemperature: 27, // 26.72
         minTemperature: 27
       }
     ]
 
-    const { daily: actual } = await fetchWeatherDataForCity(
-      defaultCities[0],
-      mapApiTimestamp(1725688800),
-      fakeFetcher
-    )
+    const { daily: actual } = await fetchWeatherDataForCity(defaultCities[0], fakeFetcher)
 
     expect(actual).toHaveLength(expected.length)
 

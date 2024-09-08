@@ -26,7 +26,7 @@ function fetchData() {
 
 async function fetchDataForCity(city: CityModel) {
   try {
-    const { hourly, daily } = await fetchWeatherDataForCity(city, new Date(), apiFetcher)
+    const { hourly, daily } = await fetchWeatherDataForCity(city, apiFetcher)
     city.hourlyForecast = hourly
     city.dailyForecast = daily
     lastUpdated.value = now()

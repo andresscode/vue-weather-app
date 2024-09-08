@@ -34,3 +34,22 @@ export function mapApiTimestamp(timestamp: number) {
 export function removeTimeFromISOString(datetime: string) {
   return datetime.split('T')[0]
 }
+
+export function isMidnightInTimezone(timestamp: number, timezoneOffsetInSeconds: number) {
+  // Create a Date object from the timestamp (in milliseconds)
+  const date = new Date(timestamp * 1000)
+
+  // Convert the timezone offset to milliseconds
+  const timezoneOffsetInMs = timezoneOffsetInSeconds * 1000
+
+  // Adjust the date to the target timezone
+  const localDate = new Date(date.getTime() + timezoneOffsetInMs)
+
+  // Extract hours, minutes, and seconds
+  const hours = localDate.getUTCHours()
+  const minutes = localDate.getUTCMinutes()
+  const seconds = localDate.getUTCSeconds()
+
+  // Check if the time is 00:00:00
+  return hours === 0 && minutes === 0 && seconds === 0
+}
