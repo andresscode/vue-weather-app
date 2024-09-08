@@ -87,7 +87,7 @@ export const fetchWeatherDataForCity = async (
       return {
         id: crypto.randomUUID(),
         iconCode: `${iconId}d`, // use by default always day icons
-        date: mapApiTimestamp(day.timestamps.at(-1)! + responseDTO.city.timezone), // add timezone offset to display days forecast in city local time
+        date: mapApiTimestamp(day.timestamps.pop()! + responseDTO.city.timezone), // add timezone offset to display days forecast in city local time
         message: `${mostSeen.main} throughout the day.`,
         maxTemperature: Math.round(Math.max(...day.temps)),
         minTemperature: Math.round(Math.min(...day.temps))
