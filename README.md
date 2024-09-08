@@ -1,45 +1,45 @@
-# weather-app
+# Vue Weather App
 
-This template should help get you started developing with Vue 3 in Vite.
+The application is not production-ready and was developed following a pragmatic approach to deliver as much functionality as possible in the least amount of time. Please keep in mind that the components were not tested due to time constraints, and most of the testing effort was focused on handling the API data.
 
-## Recommended IDE Setup
+The UI was designed and built with a mobile-first approach. If you install this app on your local machine, I suggest you test it on Chrome using the mobile view mode and not full-screen mode.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+**Important**: Before running the application locally, please create a `.env.local` file inside the project's root directory using the API key.
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```
+VITE_API_KEY=<API_KEY_HERE>
 ```
 
-### Compile and Hot-Reload for Development
+## Features
 
-```sh
-npm run dev
+* Hourly Forecast: Next 24 hours.
+* Daily Forecast: Next five days.
+* Users can refresh the forecast data.
+* Simple city search.
+
+### Hourly Forecast
+
+ The hourly forecast is shown in intervals of 3 hours because that's how the data comes from the API. The hour seen in the app for each city corresponds to the city's local time, not the local time of the person using the application. Users can see up to the next 24 hours.
+
+ ### Daily Forecast
+
+ The daily forecast displays information about the weather for the next five days. The dates correspond to the city's local time as well. The most important part here was determining what message and icon to show for each day.
+ In this case, I found the longest subsequence of similar weather conditions using the weather's icon code (ignoring days and nights). For example, given the following sequence:
+
+```
+01d - 01d - 04d - 04d - 04n - 04n - 01n - 01d
 ```
 
-### Type-Check, Compile and Minify for Production
+In the example above, we can find 01X and 04X four times, but because 04X has the longest subsequence, it's considered the best forecast for that particular day due to its continuous nature.
 
-```sh
-npm run build
-```
+All daily forecast icons use the day version, not the night one.
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Refresh Data
 
-```sh
-npm run test:unit
-```
+Tapping the refresh button in the header requests data from the API for all the cities. In the footer, you can see when the app last fetched data from the API.
 
-### Lint with [ESLint](https://eslint.org/)
+### Simple City Search
 
-```sh
-npm run lint
-```
+Users can tap the search icon in the header to enter a city's name and add it to the available cities tab. A successful search opens a new tab and triggers a request to fetch the forecast for that particular city automatically. This feature
+uses a straightforward search mechanism based on HashTables and Keys. To find a city, you need an exact match with any of the keys in the hashtable. The list of cities was generated from the metadata `.csv` file suggested. A bit of
+processing was done to make the search case insensitive. Diacritical marks and accents were removed to make the search easier.
